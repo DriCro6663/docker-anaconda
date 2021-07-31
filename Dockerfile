@@ -3,9 +3,11 @@ FROM continuumio/anaconda3
 
 # sh -> bash
 SHELL ["/bin/bash", "-c"]
+# Open jupyter port on the container side
 # コンテナ側の jupyter ポート開放
 EXPOSE 8888
 
+# .env variable definition
 # .env 変数定義
 ARG jupyter_pass="none"
 ARG jupyter_dir="/home/Jupyter-Home"
@@ -15,14 +17,17 @@ ARG venv_list="sample/Sample:latest"
 ARG nbextensions="toc2/main"
 ARG venv_module="numpy pandas matplotlib"
 
+# Create working directory for jupyter
 # jupyter の作業ディレクトリ作成
 RUN mkdir ${jupyter_dir}
 
+# base-os update
 # base-os のアップデート
 RUN apt-get update \
   && apt-get upgrade -y \
   && apt-get install -y libglu1-mesa libxi-dev libxmu-dev libglu1-mesa-dev
 
+# Add conda-forge
 # conda-forge を追加
 RUN for ch in ${add_ch[@]} ; \
     do \
@@ -34,10 +39,12 @@ RUN for ch in ${add_ch[@]} ; \
     done \
   && conda config --show-sources
 
+# Anaconda Updates & Package Updates
 # Anaconda のアップデート & パッケージのアップデート
 RUN conda update -y -c defaults --all \ 
   && conda update -n base -c defaults conda
 
+# Add conda to bash & apply to bash
 # bash に conda を追加 & bash に適用
 RUN conda init \
   && conda init bash \
@@ -50,6 +57,7 @@ RUN conda init \
 RUN conda install -c conda-forge jupyterthemes \
   && conda update jupyterthemes
 
+# jupyterthemes Install & Update
 # jupyterthemes の変更
 RUN if [ ${jupytertheme} = "none" ]; then \
       echo "skip jupyterthemes" ; \
@@ -58,13 +66,16 @@ RUN if [ ${jupytertheme} = "none" ]; then \
       jt ${jupytertheme} ; \
     fi
 
+# Create jupyter notebook configuration file
 # jupyter notebook の設定ファイルの作成
 RUN jupyter-notebook --generate-config
 
+# Create jupyter lab configuration file
 # jupyter lab の設定ファイルの作成
 RUN jupyter lab --generate-config
 
 # https://stackoverflow.com/questions/39759623/jupyter-notebook-server-password-invalid
+# Add settings to the configuration file of jupyter notebook
 # jupyter notebook の設定ファイルに設定追記
 RUN path="/root/.jupyter/jupyter_notebook_config.py" \
   && echo "# my notebooks settings" >> $path \
@@ -86,6 +97,7 @@ RUN path="/root/.jupyter/jupyter_notebook_config.py" \
     fi
 
 # https://stackoverflow.com/questions/39759623/jupyter-notebook-server-password-invalid
+# Add settings to the jupyter lab configuration file
 # jupyter lab の設定ファイルに設定追記
 RUN path="/root/.jupyter/jupyter_lab_config.py" \
   && echo "# my notebooks settings" >> $path \
@@ -109,6 +121,16 @@ RUN path="/root/.jupyter/jupyter_lab_config.py" \
     # https://ricrowl.hatenablog.com/entry/2020/05/21/222821
     # https://qiita.com/SaitoTsutomu/items/aee41edf1a990cad5be6
     # https://qiita.com/tdrk/items/e6c293021cbcb0e96cd2
+    # 
+    # Matplotlib diagram allowed to be displayed on notebook: c.IPKernelApp.pylab ='inline'
+    # Allowed address for external connection               : c.NotebookApp.ip = '0.0.0.0'
+    # Connection port on the container side                 : c.NotebookApp.port = [Connection port on the container side]
+    # Allow jupyter to start from root                      : c.NotebookApp.allow_root = True
+    #Jupyter Prohibits opening browser when starting        : c.NotebookApp.open_browser = False
+    #Initial work directory change                          : c.NotebookApp.notebook_dir ='C: \ Users'
+    # jupyter Login password                                : c.NotebookApp.token =''
+    # jupyter Login password hash                           : c.NotebookApp.password = u'sha1: <hashed password>''
+    # 
     # matplotlib の図を notebook 上で表示許可 ：c.IPKernelApp.pylab = 'inline'
     # 外部の接続の許可アドレス                 ：c.NotebookApp.ip = '0.0.0.0'
     # コンテナ側の接続ポート                   ：c.NotebookApp.port = [コンテナ側の接続ポート]
@@ -119,6 +141,7 @@ RUN path="/root/.jupyter/jupyter_lab_config.py" \
     # jupyter ログイン時のパスワードハッシュ   ：c.NotebookApp.password = u'sha1:<ハッシュ化されたパスワード>''
 
 # https://www.soudegesu.com/post/python/jupyter-autocomplete/
+# Install & enable # jupyter extensions
 # jupyter の拡張機能のインストール＆有効化
 RUN conda install -y -c conda-forge jupyter_contrib_nbextensions \
   && conda install -y -c conda-forge jupyter_nbextensions_configurator \
@@ -126,6 +149,7 @@ RUN conda install -y -c conda-forge jupyter_contrib_nbextensions \
   && jupyter nbextensions_configurator enable
 
 # https://qiita.com/simonritchie/items/88161c806197a0b84174
+# Enable jupyter extensions
 # jupyter の拡張機能の有効化
 RUN for path in ${nbextensions[@]}; \
     do \
@@ -138,10 +162,12 @@ RUN for path in ${nbextensions[@]}; \
       fi \
     done
 
+# Copy virtual environment.yml
 # 仮想環境.yml をコピー
 COPY ./venv.yml /home/venv.yml
 RUN ls /home/venv.yml
 
+# Rebuilding the virtual environment
 # 仮想環境の再構築
 RUN for file in /home/venv.yml/*; \
     do \
@@ -164,9 +190,11 @@ RUN for file in /home/venv.yml/*; \
       fi \
     done
 
+# Building a virtual environment
 # 仮想環境の構築
 RUN for venv in ${venv_list[@]}; \
     do \
+      # If you do not create a virtual environment
       # 仮想環境を作らない場合
       if [ "${venv}" = "none" ]; then \
         echo "don't build a virtual environment" ; exit 0 ; \
@@ -212,5 +240,6 @@ RUN for venv in ${venv_list[@]}; \
       fi \
     done
 
+# Launch bash
 # bash の起動
 CMD ["/bin/bash"]

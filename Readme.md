@@ -4,7 +4,7 @@ I'm currently summarizing.
 Please wait a little bit.
 I'm not good at English. There may be parts that are difficult to understand. In that case, please feel free to ask me questions.
 
-# Twitter-Bot Free Ver.
+# docker-anaconda
 
 
 
