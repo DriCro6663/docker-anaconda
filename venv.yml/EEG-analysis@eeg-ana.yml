@@ -1,0 +1,19 @@
+name: eeg-ana
+channels:
+  - conda-forge
+  - defaults
+dependencies:
+  - python=3.7
+  - jupyter
+  - scikit-learn
+  - pandas
+  - seaborn
+  - mlxtend
+  - sympy
+  - tensorflow
+  - keras
+  - tqdm
+  - numba
+  - cython
+  - opencv
+prefix: C:\Users\G.Yamada\Anaconda3\envs\eeg-ana

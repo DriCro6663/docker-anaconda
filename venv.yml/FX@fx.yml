@@ -1,0 +1,28 @@
+name: fx
+channels:
+  - conda-forge
+  - defaults
+dependencies:
+  - python=3.6
+  - numpy
+  - pandas
+  - jupyter
+  - requests
+  - numba
+  - scipy
+  - matplotlib
+  - plotly
+  - ta-lib
+  - openpyxl
+  - tqdm
+  - dask
+  - seaborn
+  - scikit-learn
+  - statsmodels
+  - pip:
+    - backtesting
+    - mplfinance
+    - oandapy
+    - oandapyv20
+    - pyyaml
+prefix: C:\Users\G.Yamada\Anaconda3\envs\fx

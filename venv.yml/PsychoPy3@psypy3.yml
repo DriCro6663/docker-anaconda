@@ -1,0 +1,16 @@
+name: psypy3
+channels:
+  - conda-forge
+  - defaults
+dependencies:
+  - python=3.7
+  - jupyter
+  - psychopy
+  - numpy
+  - pandas
+  - sympy
+  - pip:
+    - autopy
+    - pyqt5-sip
+    - pyqtwebengine
+prefix: C:\Users\G.Yamada\Anaconda3\envs\psypy3
