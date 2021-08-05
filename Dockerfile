@@ -126,8 +126,8 @@ RUN path="/root/.jupyter/jupyter_lab_config.py" \
     # Allowed address for external connection               : c.NotebookApp.ip = '0.0.0.0'
     # Connection port on the container side                 : c.NotebookApp.port = [Connection port on the container side]
     # Allow jupyter to start from root                      : c.NotebookApp.allow_root = True
-    #Jupyter Prohibits opening browser when starting        : c.NotebookApp.open_browser = False
-    #Initial work directory change                          : c.NotebookApp.notebook_dir ='C: \ Users'
+    # Jupyter Prohibits opening browser when starting        : c.NotebookApp.open_browser = False
+    # Initial work directory change                          : c.NotebookApp.notebook_dir ='C: \ Users'
     # jupyter Login password                                : c.NotebookApp.token =''
     # jupyter Login password hash                           : c.NotebookApp.password = u'sha1: <hashed password>''
     # 
